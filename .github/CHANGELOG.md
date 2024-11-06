@@ -25,6 +25,7 @@
 1. [A380X/SD] Added correct ECP ALL button SD page cycling to the A380X - @frankkopp (Frank Kopp)
 1. [A380/MFD] Limit keyboard inputs to keys present in the KCCU and remap comma to decimal dot - @beheh (Benedict Etzel)
 1. [A380X/AP] Improved support of simulation rate 4x - @aguther (Andreas Guther)
+1. [A30X/MFD] Added unit conversion for lbs/ft - MikioDK (Mikio)
 
 ## 0.12.0
 
