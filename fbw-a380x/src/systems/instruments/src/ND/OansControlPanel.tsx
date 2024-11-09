@@ -19,6 +19,9 @@ import {
   Subject,
   Subscribable,
   Subscription,
+  Unit,
+  UnitFamily,
+  UnitType,
   VNode,
 } from '@microsoft/msfs-sdk';
 import {
@@ -170,6 +173,10 @@ export class OansControlPanel extends DisplayComponent<OansProps> {
 
   public interactionMode = Subject.create<InteractionMode>(InteractionMode.Touchscreen);
 
+  private unit = Subject.create<Unit<UnitFamily.Distance>>(
+    NXDataStore.get('CONFIG_USING_METRIC_UNIT') === '1' ? UnitType.METER : UnitType.FOOT,
+  );
+
   private readonly radioAltitude1 = Arinc429LocalVarConsumerSubject.create(this.sub.on('radioAltitude_1'));
   private readonly radioAltitude2 = Arinc429LocalVarConsumerSubject.create(this.sub.on('radioAltitude_2'));
   private readonly radioAltitude3 = Arinc429LocalVarConsumerSubject.create(this.sub.on('radioAltitude_3'));
@@ -217,6 +224,10 @@ export class OansControlPanel extends DisplayComponent<OansProps> {
     });
 
     NXDataStore.getAndSubscribe('NAVIGRAPH_ACCESS_TOKEN', () => this.loadOansDb());
+
+    NXDataStore.getAndSubscribe('CONFIG_USING_METRIC_UNIT', (key, value) => {
+      value === '1' ? this.unit.set(UnitType.METER) : this.unit.set(UnitType.FOOT);
+    });
 
     this.subs.push(
       this.props.isVisible.sub((it) => this.style.setValue('visibility', it ? 'visible' : 'hidden'), true),
@@ -601,6 +612,7 @@ export class OansControlPanel extends DisplayComponent<OansProps> {
                       lda={this.runwayLda}
                       ldaIsReduced={Subject.create(false)}
                       coordinate={Subject.create('----')}
+                      unit={this.unit}
                     />
                   </div>
                   <div ref={this.mapDataBtvFallback} class="oans-cp-map-data-btv-fallback">
